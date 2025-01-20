@@ -9,7 +9,7 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 const { width } = Dimensions.get('window');
 
 // Stored user details (typically stored in a database)
-let storedUser = {
+let initialUser = {
   name: 'Breal John',
   email: 'user@example.com',
   password: 'password123',
@@ -49,7 +49,7 @@ function CreateAccountScreen({ navigation }) {
       return;
     }
     setError('');
-    storedUser = { name, email, password };  // Save user details
+    initialUser = { name, email, password };  // Save user details
     setTimeout(() => {
       navigation.replace('MainApp');
     }, 1000);
@@ -80,7 +80,7 @@ function LoginScreen({ navigation }) {
   const [error, setError] = useState('');
 
   const handleLogin = () => {
-    if (email !== storedUser.email || password !== storedUser.password) {
+    if (email !== initialUser.email || password !== initialUser.password) {
       setError('Incorrect email or password.');
       return;
     }
@@ -90,7 +90,8 @@ function LoginScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Log In</Text>
+      <Text style={styles.title}>Java news</Text> {/* Title added here */}
+      <Text style={styles.subtitle}>Please log in to continue</Text> {/* Subtitle added here */}
       {error && <Text style={styles.errorText}>{error}</Text>}
       <TextInput style={styles.input} placeholder="Email" value={email} onChangeText={setEmail} keyboardType="email-address" />
       <TextInput style={styles.input} placeholder="Password" value={password} onChangeText={setPassword} secureTextEntry />
@@ -112,19 +113,18 @@ function NotificationsScreen() {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Notifications</Text>
-      {/* Here, we can render notifications */}
     </View>
   );
 }
 
 // Profile Screen
 function ProfileScreen({ navigation }) {
-  const [name, setName] = useState(storedUser.name);
-  const [email, setEmail] = useState(storedUser.email);
+  const [name, setName] = useState(initialUser.name);
+  const [email, setEmail] = useState(initialUser.email);
   const [isEditable, setIsEditable] = useState(false);
 
   const handleSaveChanges = () => {
-    storedUser = { name, email, password: storedUser.password };
+    initialUser = { name, email, password: initialUser.password };
     setIsEditable(false);
     navigation.goBack();
   };
@@ -147,8 +147,8 @@ function ProfileScreen({ navigation }) {
       </TouchableOpacity>
       {isEditable && (
         <TouchableOpacity style={styles.button} onPress={() => {
-          setName(storedUser.name);
-          setEmail(storedUser.email);
+          setName(initialUser.name);
+          setEmail(initialUser.email);
           setIsEditable(false);
         }}>
           <Text style={styles.buttonText}>Cancel</Text>
@@ -182,7 +182,7 @@ function HomeScreen() {
   const [newsFeedState, setNewsFeedState] = useState(initialNewsFeed);
   const [newPost, setNewPost] = useState('');
   const [newPostTitle, setNewPostTitle] = useState('');
-  
+
   // Handle like button
   const handleLike = (id) => {
     setNewsFeedState(prevState => {
@@ -326,13 +326,20 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
     paddingHorizontal: 15,
   },
   title: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: 'bold',
-    marginBottom: 20,
+    marginBottom: 10,
+    textAlign: 'center',
+  },
+  subtitle: {
+    fontSize: 16,
+    color: '#777',
+    marginBottom: 30,
     textAlign: 'center',
   },
   input: {
@@ -342,13 +349,14 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     paddingLeft: 10,
     marginVertical: 10,
+    width: width - 30,
   },
   button: {
     backgroundColor: '#007BFF',
     padding: 10,
     borderRadius: 8,
     alignItems: 'center',
-    width: '100%',
+    width: width - 30,
   },
   buttonText: {
     color: '#fff',
@@ -357,6 +365,11 @@ const styles = StyleSheet.create({
   errorText: {
     color: 'red',
     marginBottom: 10,
+    textAlign: 'center',
+  },
+  link: {
+    color: '#007BFF',
+    marginTop: 10,
     textAlign: 'center',
   },
   newsItem: {
@@ -393,10 +406,5 @@ const styles = StyleSheet.create({
   },
   postForm: {
     marginBottom: 20,
-  },
-  link: {
-    color: '#007BFF',
-    marginTop: 10,
-    textAlign: 'center',
   },
 });
